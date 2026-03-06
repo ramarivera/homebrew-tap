@@ -3,7 +3,7 @@ class Wacli < Formula
   homepage "https://github.com/steipete/wacli"
   version "0.2.0"
   license "MIT"
-  env :std
+  depends_on "go" => :build
 
   on_macos do
     url "https://github.com/steipete/wacli/releases/download/v#{version}/wacli-macos-universal.tar.gz"
@@ -11,9 +11,8 @@ class Wacli < Formula
   end
 
   on_linux do
-    url "https://github.com/steipete/wacli/archive/refs/tags/v#{version}.tar.gz"
-    sha256 "80fc82c7f77f63b25434d8f926f0d9d8d57592d971e37495698b757198beac42"
-    depends_on "go@1.25" => :build
+    url "https://github.com/ramarivera/homebrew-tap/releases/download/wacli-v0.2.0-linux-r1/wacli-linux-x86_64-v0.2.0-r1.tar.gz"
+    sha256 "53b66fb92f76325acdba5ec272bdd424825737f2f7fa4be7d366833a4e03c561"
   end
 
   head "https://github.com/steipete/wacli.git", branch: "main"
@@ -23,8 +22,7 @@ class Wacli < Formula
       bin.install "wacli"
     else
       ldflags = "-s -w -X main.version=#{version}"
-      go = OS.linux? ? Formula["go@1.25"].opt_bin/"go" : "go"
-      system go, "build", "-tags", "sqlite_fts5", *std_go_args(ldflags: ldflags), "./cmd/wacli"
+      system "go", "build", "-tags", "sqlite_fts5", *std_go_args(ldflags: ldflags), "./cmd/wacli"
     end
   end
 
