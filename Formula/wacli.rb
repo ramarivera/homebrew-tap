@@ -23,8 +23,8 @@ class Wacli < Formula
     else
       ldflags = "-s -w -X main.version=#{version}"
       # GCC 15+ with glibc 2.42+ promotes runtime/cgo warnings to errors.
-      # Relax warning-to-error promotion for cgo-generated C glue only.
-      ENV.append "CGO_CFLAGS", "-Wno-error"
+      # Use explicit CGO_CFLAGS override so cgo-generated C glue does not fail on warnings.
+      ENV["CGO_CFLAGS"] = "-Wno-error"
       system "go", "build", "-tags", "sqlite_fts5", *std_go_args(ldflags: ldflags), "./cmd/wacli"
     end
   end
