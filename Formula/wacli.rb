@@ -22,9 +22,9 @@ class Wacli < Formula
       bin.install "wacli"
     else
       ldflags = "-s -w -X main.version=#{version}"
-      # GCC 15+ with glibc 2.42+ promotes runtime/cgo warnings to errors.
-      # Use explicit CGO_CFLAGS override so cgo-generated C glue does not fail on warnings.
-      ENV["CGO_CFLAGS"] = "-Wno-error"
+      # Homebrew superenv can inject warning-as-error into GOGCCFLAGS on Linux.
+      # Override to baseline cgo flags so runtime/cgo compiles with modern GCC/glibc.
+      ENV["GOGCCFLAGS"] = "-fPIC -m64 -pthread"
       system "go", "build", "-tags", "sqlite_fts5", *std_go_args(ldflags: ldflags), "./cmd/wacli"
     end
   end
