@@ -3,6 +3,7 @@ class Wacli < Formula
   homepage "https://github.com/steipete/wacli"
   version "0.2.0"
   license "MIT"
+  env :std
 
   on_macos do
     url "https://github.com/steipete/wacli/releases/download/v#{version}/wacli-macos-universal.tar.gz"
