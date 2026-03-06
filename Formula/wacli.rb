@@ -22,10 +22,13 @@ class Wacli < Formula
       bin.install "wacli"
     else
       ldflags = "-s -w -X main.version=#{version}"
-      # Homebrew superenv can inject warning-as-error into GOGCCFLAGS on Linux.
-      # Override to baseline cgo flags so runtime/cgo compiles with modern GCC/glibc.
-      ENV["GOGCCFLAGS"] = "-fPIC -m64 -pthread"
-      system "go", "build", "-tags", "sqlite_fts5", *std_go_args(ldflags: ldflags), "./cmd/wacli"
+      # Homebrew superenv can inject warning-as-error into cgo glue compilation.
+      # Pass explicit cgo flags for this build invocation to prevent GCC 15+ breakage.
+      build_env = {
+        "CGO_CFLAGS" => "-Wno-error -Wno-error=missing-braces",
+        "CGO_CPPFLAGS" => "-Wno-error",
+      }
+      system build_env, "go", "build", "-tags", "sqlite_fts5", *std_go_args(ldflags: ldflags), "./cmd/wacli"
     end
   end
 
